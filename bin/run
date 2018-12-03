@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__ . '/../src/PhpArrayStore.php';
+require_once __DIR__ . '/../src/JsonFileStore.php';
+require_once __DIR__ . '/../src/YamlFileStore.php';
+require_once __DIR__ . '/../console_helper.php';
+
+$key = 'testKey';
+$value = 200;
+
+$store = new PhpArrayStore();
+$store->set($key, $value);
+writeln($store->getStore());
+
+$key = 'key1';
+$value = 500;
+
+$store->set($key, $value);
+writeln($store->getStore());
+writeln($store->has($key));
+writeln($store->remove($key));
+writeln($store->has($key));
+
+
+echo "===Json File Test===". \PHP_EOL;
+$JsonStore = new JsonFileStore();
+$JsonStore->set($key, $value);
+writeln($JsonStore->has($key));
+
+echo "===Yaml File Test===". \PHP_EOL;
+$JsonStore = new YamlFileStore();
+$JsonStore->set($key, $value);
+writeln($JsonStore->has($key));

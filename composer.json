@@ -1,0 +1,13 @@
+{
+    "name": "boroda/dz_storage",
+    "type": "project",
+    "require": {
+        "symfony/yaml": "^4.2"
+    },
+    "authors": [
+        {
+            "name": "Oleksii Maiboroda",
+            "email": "alexeymayboroda23@gmail.com"
+        }
+    ]
+}
