@@ -1,66 +1,23 @@
 <?php
-require_once __DIR__ . '/KeyValueStoreInterface.php';
+require_once __DIR__ . '/AbstractKeyValueFileStore.php';
 
-class JsonFileStore implements KeyValueStoreInterface
+class JsonFileStore extends AbstractKeyValueFileStore
 {
-    private $file;
-
-    public function set($key, $value)
+    /**
+     * {@inheritdoc}
+     */
+    protected function load(): array
     {
-        if (file_exists($this->file)) {
-            $json = file_get_contents($this->file);
-            $data = json_decode($json, true);
-            $data[$key] = $value;
-            $json = json_encode($data);
-            file_put_contents($this->file, $json);
-        }
-
-        else {
-            $data[$key] = $value;
-            $json = json_encode($data);
-            file_put_contents($this->file, $json);
-        }
+        $storage = \file_get_contents($this->file);
+        $data = \json_decode($storage, true);
+        return \is_array($data) ? $data : [];
     }
-
-    public function get($key, $default = null)
+    /**
+     * {@inheritdoc}
+     */
+    protected function update(array $data): void
     {
-        $json = file_get_contents($this->file);
-        $data = json_decode($json, true);
-        if (isset($data[$key])) {
-            return $data[$key];
-        }
-        else {
-            return $default;
-        }
+        $json = \json_encode($data, \JSON_PRETTY_PRINT);
+        \file_put_contents($this->file, $json, \LOCK_EX);
     }
-
-    public function has($key): bool
-    {
-        $json = file_get_contents($this->file);
-        $data = json_decode($json, true);
-        return isset($data[$key]);
-    }
-
-    public function remove($key)
-    {
-        $json = file_get_contents($this->file);
-        $data = json_decode($json, true);
-        unset($data[$key]);
-        $json = json_encode($data);
-        file_put_contents($this->file, $json);
-    }
-
-    public function clear()
-    {
-        unlink($this->file);
-    }
-
-    public function __construct()
-    {
-        $filepath = __DIR__ . "/../bin/";
-        $filename = time().".json";
-        $this->file = $filepath.$filename;
-    }
-
-
 }
